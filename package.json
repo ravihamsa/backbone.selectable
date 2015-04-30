@@ -1,0 +1,31 @@
+{
+  "name": "backbone.selectable",
+  "version": "1.0.0",
+  "description": "Collections with selection management",
+  "main": "backbone.selectable.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ravihamsa/backbone.selectable.git"
+  },
+  "keywords": [
+    "backbone",
+    "colleciton",
+    "selection",
+    "single",
+    "multiple"
+  ],
+  "author": "Ravi Hamsa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ravihamsa/backbone.selectable/issues"
+  },
+  "homepage": "https://github.com/ravihamsa/backbone.selectable",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jasmine": "^0.8.2",
+    "grunt-contrib-jshint": "^0.11.2"
+  }
+}
