@@ -15,7 +15,7 @@ module.exports = function(grunt) {
                 ]
             },
             selectable : {
-                src : ['src/*.js']
+                src : ['src/backbone.selectable.js', 'src/backbone.multiselectable.js']
             }
         },
 

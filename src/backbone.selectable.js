@@ -1,23 +1,24 @@
 /**
  * Created by ravi.hamsa on 30/04/15.
  */
-(function(root) {
+(function (root) {
 
     var Backbone = root.Backbone;
+    var selectedKey = 'selected';
 
 
-    var SelectionManager = function() {
+    var SelectionManager = function () {
         var _this = this;
         this.clearSelection();
     };
 
     _.extend(SelectionManager.prototype, {
-        setSelected: function(obj) {
+        setSelected: function (obj) {
             if (this.validateSelection(obj)) {
                 this._setSelected(obj);
             }
         },
-        validateSelection: function(obj) {
+        validateSelection: function (obj) {
             if (obj === null || obj === undefined) {
                 return false;
             }
@@ -28,23 +29,23 @@
             }
             return true;
         },
-        _reSelected: function() {
+        _reSelected: function () {
 
         },
-        _setSelected: function(obj) {
+        _setSelected: function (obj) {
             this.prev = this.selected;
             this.selected = obj;
         },
-        _isReselect: function(obj) {
+        _isReselect: function (obj) {
             return obj === this.selected;
         },
-        getSelected: function() {
+        getSelected: function () {
             return this.selected;
         },
-        getPrevSelected: function() {
+        getPrevSelected: function () {
             return this.prev;
         },
-        clearSelection: function() {
+        clearSelection: function () {
             this.selected = null;
             this.prev = null;
         }
@@ -52,19 +53,18 @@
 
 
     var SelectableCollection = Backbone.Collection.extend({
-        constructor: function(options) {
-            options = options || {};
-            this.multiSelect = options.multiSelect || false;
+        constructor: function (options) {
             this.selectionManager = new SelectionManager();
             Backbone.Collection.prototype.constructor.apply(this, arguments);
         },
-        setSelected: function(model) {
-            if (this.validateSelection(model)) {
+        setSelected: function (model) {
+            if (this.validateSelection(model) && !this.isReselect(model)) {
                 this.selectionManager.setSelected(model.id);
+                this.updateModels();
                 this.triggerSelectionEvent('selectionChange');
             }
         },
-        validateSelection: function(model) {
+        validateSelection: function (model) {
             if (!model) {
                 this.triggerErrorEvent('modelMissing', model);
                 return false;
@@ -80,19 +80,19 @@
                 return false;
             }
 
-            if(this.indexOf(model) < 0){
+            if (this.indexOf(model) < 0) {
                 this.triggerErrorEvent('notAMemberModel', model);
                 return false;
             }
-
-            if (this._isReselect(model)) {
-                this.triggerSelectionEvent('reSelect');
-                return false;
-            }
-
             return true;
         },
-        _isReselect: function(model) {
+        isReselect: function(model){
+            if (this._isReselect(model)) {
+                this.triggerSelectionEvent('reSelect');
+                return true;
+            }
+        },
+        _isReselect: function (model) {
             var selected = this.selectionManager.getSelected();
             if (!selected) {
                 return false;
@@ -101,28 +101,37 @@
                 return true;
             }
         },
-        getSelected: function() {
+        getSelected: function () {
             var selectedId = this.selectionManager.getSelected();
             if (selectedId) {
                 return this.get(selectedId);
             }
         },
-        getPrevSelected: function() {
+        getPrevSelected: function () {
             var prevSelectedId = this.selectionManager.getPrevSelected();
             if (prevSelectedId) {
                 return this.get(prevSelectedId);
             }
         },
-        triggerSelectionEvent: function(eventName) {
+        updateModels: function () {
+            var prev = this.getPrevSelected();
+            var selected = this.getSelected();
+            if (prev) {
+                prev.set(selectedKey, false);
+            }
+            if (selected) {
+                selected.set(selectedKey, true);
+            }
+        },
+        triggerSelectionEvent: function (eventName) {
             this.trigger(eventName, this.getSelected(), this.getPrevSelected());
         },
-        triggerErrorEvent: function(eventName, model) {
+        triggerErrorEvent: function (eventName, model) {
             this.trigger(eventName, model);
         }
     });
 
     Backbone.SelectionManager = SelectionManager;
     Backbone.SelectableCollection = SelectableCollection;
-
 
 })(this);

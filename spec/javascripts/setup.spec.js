@@ -8,6 +8,10 @@ describe("Setup Alright", function(){
         expect(Backbone.SelectableCollection).toBeDefined()
     })
 
+    it('Backbone.MultiSelectable Loaded', function(){
+        expect(Backbone.MultiSelectableCollection).toBeDefined()
+    })
+
 
 
 })
