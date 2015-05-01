@@ -18,6 +18,11 @@
     "slice": true,
     "require": true,
     "define": true,
+    "describe": true,
+    "beforeEach": true,
+    "afterEach": true,
+    "it": true,
+    "expect": true,
     "module": true
   }
 }
