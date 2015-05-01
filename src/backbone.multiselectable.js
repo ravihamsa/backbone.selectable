@@ -34,8 +34,9 @@
 
     var MultiSelectableCollection = Backbone.SelectableCollection.extend({
         constructor: function(options) {
-            Backbone.SelectableCollection.prototype.constructor.apply(this, arguments);
             this.selectionManager = new MultiSelectManager();
+            Backbone.Collection.prototype.constructor.apply(this, arguments);
+            this.readSelection();
         },
         setSelected: function(model) {
             if (this.validateSelection(model)) {
@@ -63,6 +64,14 @@
                     model.set(selectedKey, false);
                 }
             });
+        },
+        readSelection: function(){
+            var whereObj = {};
+            whereObj[selectedKey]=true;
+            var selectedModels = this.where(whereObj);
+            _.forEach(selectedModels, function(model){
+                this.setSelected(model);
+            }, this);
         },
         triggerSelectionEvent: function(eventName) {
             this.trigger(eventName, this.getSelected());

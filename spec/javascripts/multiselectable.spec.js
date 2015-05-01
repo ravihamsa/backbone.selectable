@@ -3,7 +3,7 @@ describe('MultiSelectable', function() {
 
     beforeEach(function() {
         selectionManager = new Backbone.MultiSelectManager();
-        selectableCollection = new Backbone.MultiSelectableCollection([{id: '1', name: 'one'}, {id: '2', name: 'two'}, {name: 'noid'}]);
+        selectableCollection = new Backbone.MultiSelectableCollection([{id: '1', name: 'one'}, {id: '2', name: 'two'}, {id: '3', name: 'three', selected:true}, {id: '4', name: 'four', selected:true}, {name: 'noid'}]);
         selectableCollection.on('all', function(arg1, arg2, arg3) {
             //console.log(arg1, arg2, arg3);
         });
@@ -36,7 +36,7 @@ describe('MultiSelectable', function() {
     });
 
     it('selectable validation fails on id missing', function() {
-        expect(selectableCollection.validateSelection(selectableCollection.at(2))).toBeFalsy();
+        expect(selectableCollection.validateSelection(selectableCollection.at(4))).toBeFalsy();
     });
 
     it('selectable validation fails on external model', function() {
@@ -54,6 +54,7 @@ describe('MultiSelectable', function() {
     });
 
     it('selectable selection fail in missing model ', function() {
+        selectableCollection.clearSelection();
         selectableCollection.setSelected();
         var selected = selectableCollection.getSelected();
         expect(selected.length).toBe(0);
@@ -65,7 +66,13 @@ describe('MultiSelectable', function() {
         expect(selected[0]).toBe(selectableCollection.get(1));
     });
 
+    it('read selection works as expected', function() {
+        var selected = selectableCollection.getSelected();
+        expect(selected.length).toBe(2);
+    });
+
     it('selectable selection works as expected on second select ', function() {
+        selectableCollection.clearSelection();
         selectableCollection.setSelected(selectableCollection.get(1));
         selectableCollection.setSelected(selectableCollection.get(2));
         var selected = selectableCollection.getSelected();
@@ -73,6 +80,7 @@ describe('MultiSelectable', function() {
     });
 
     it('selectable selection works as expected on reselect ', function() {
+        selectableCollection.clearSelection();
         selectableCollection.setSelected(selectableCollection.get(1));
         selectableCollection.setSelected(selectableCollection.get(2));
         selectableCollection.setSelected(selectableCollection.get(1));

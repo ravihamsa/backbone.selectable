@@ -3,7 +3,7 @@ describe('Selectable', function() {
 
     beforeEach(function() {
         selectionManager = new Backbone.SelectionManager();
-        selectableCollection = new Backbone.SelectableCollection([{id: 1, name: 'one'}, {id: 2, name: 'two'}, {name: 'noid'}]);
+        selectableCollection = new Backbone.SelectableCollection([{id: 1, name: 'one'}, {id: 2, name: 'two'}, {id:3, name:'three', selected:true}, {name: 'noid'}]);
         selectableCollection.on('all', function(arg1, arg2, arg3) {
             //console.log(arg1, arg2, arg3);
         });
@@ -36,7 +36,7 @@ describe('Selectable', function() {
     });
 
     it('selectable validation fails on id missing', function() {
-        expect(selectableCollection.validateSelection(selectableCollection.at(2))).toBeFalsy();
+        expect(selectableCollection.validateSelection(selectableCollection.at(3))).toBeFalsy();
     });
 
     it('selectable validation fails on external model', function() {
@@ -54,9 +54,15 @@ describe('Selectable', function() {
     });
 
     it('selectable selection fail in missing model ', function() {
+        selectableCollection.clearSelection();
         selectableCollection.setSelected();
         var selected = selectableCollection.getSelected();
         expect(selected).toBeUndefined();
+    });
+
+    it('read selection works as expected', function() {
+        var selected = selectableCollection.getSelected();
+        expect(selected).toBe(selectableCollection.get(3));
     });
 
     it('selectable selection works as expected ', function() {

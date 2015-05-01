@@ -56,6 +56,7 @@
         constructor: function (options) {
             this.selectionManager = new SelectionManager();
             Backbone.Collection.prototype.constructor.apply(this, arguments);
+            this.readSelection();
         },
         setSelected: function (model) {
             if (this.validateSelection(model) && !this.isReselect(model)) {
@@ -122,6 +123,19 @@
             if (selected) {
                 selected.set(selectedKey, true);
             }
+        },
+        readSelection: function(){
+            var whereObj = {};
+            whereObj[selectedKey]=true;
+            var selectedModel = this.findWhere(whereObj);
+            if(selectedModel){
+                this.setSelected(selectedModel);
+            }else{
+                this.clearSelection();
+            }
+        },
+        clearSelection:function(){
+            this.selectionManager.clearSelection();
         },
         triggerSelectionEvent: function (eventName) {
             this.trigger(eventName, this.getSelected(), this.getPrevSelected());
